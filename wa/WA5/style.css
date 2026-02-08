@@ -30,10 +30,31 @@ body {
   border: 0;
 }
 
-font[size="7"], font[size="6"], font[size="5"] {
+h1, h2, h3, h4 {
   font-family: 'Sonsie One', cursive;
   color: #2a2a2a;
 }
+
+h1 {
+  font-size: 4rem;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 10px black;
+}
+
+h2 {
+  font-size: 3rem;
+  text-align: center;
+}
+
+h3 {
+  font-size: 2.2rem;
+}
+
+h4 {
+  font-size: 1.9rem;
+}
+
 
 p, input, li, table, label {
   font-family: 'Open Sans Condensed', sans-serif;
@@ -63,7 +84,7 @@ p, li, table {
 
 /* || header layout */
 
-div[class="nav"], article, footer, .secondary {
+.nav, article, footer, .secondary {
   background-color: rgb(255, 255, 255);
 }
 
@@ -75,28 +96,28 @@ article {
   margin-right: 10px;
 }
 
-div[class="nav"] {
+.nav {
   height: 50px;
-  background-color: #ff80ff;
+  background-color: ff80ff;
   display: flex;
   padding: 1% 0;
   margin-bottom: 10px;
 }
 
-div[class="nav"] ul {
+.nav ul {
   padding: 0;
   list-style-type: none;
   flex: 2;
   display: flex;
 }
 
-div[class="nav"] li {
+.nav li {
   display: inline;
   text-align: center;
   flex: 1;
 }
 
-div[class="nav"] a {
+.nav a {
   display: inline-block;
   font-size: 2rem;
   text-transform: uppercase;
@@ -104,7 +125,7 @@ div[class="nav"] a {
   color: black;
 }
 
-div[class="nav"] .search {
+.nav .search {
   flex: 1;
   display: flex;
   align-items: center;
@@ -159,9 +180,11 @@ th, td {
   padding: 10px;
 }
 
-td {
-  text-align: center;
+tbody th[scope="row"] {
+  text-align: center; /* or left if you prefer */
+  font-weight: bold;
 }
+
 
 th[scope="col"] {
   border-bottom: 1px solid black;
@@ -183,6 +206,11 @@ audio {
 }
 
 /* Comments styling */
+.show-hide:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 3px;
+}
+
 
 .comments {
   background-color: #def;
