@@ -4,16 +4,48 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <link rel="stylesheet" href="week7.css">
         <style>
+            div {
+    border: 15px dotted greenyellow;
+    height: 50px;
+    width: 50px;
+}
+        </style>
+        <style>
+
+            div {
+                border: 5px dotted blue;
+                height: 50px;
+                width: 50px;
+
+            }
             .box {
                 border: 5px solid red;
                 height: 100px;
                 width: 100px;
             }
+
+            #box2
+            {
+                border: 5px dashed green;
+                height: 200px;
+                width:200px;
+
+            }
         </style>
+#cascade is a rule that dictates when we have two div rules that 
+#are the same that we are going to apply them in order.
+#we apply evrything and overwrite things as we go along. 
+#dont use in line style atribute.
+#specificity 
+
 
     </head>
     <body>
+        <div>
+
+        </div>
         <div> class="box" id="box1"
 
         </div>
@@ -24,3 +56,4 @@
     </p>
     </body>
 </html>
+
