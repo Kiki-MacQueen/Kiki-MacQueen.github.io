@@ -39,3 +39,10 @@
   }
   
   /* Your CSS below here */
+  body {
+    background-image: url("top-image.png");
+    background-image: url("bottom-image.png");
+    
+
+  }
+  
