@@ -9,3 +9,13 @@ p {
     margin: 15px;
 
 }
+.box1 {
+    overflow: scroll;
+    background-color: green;
+    border: 5px dotted yellow;
+}
+
+#box2{
+    background-color: orange;
+    
+}
