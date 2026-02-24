@@ -16,6 +16,7 @@
     height: 297mm;
     margin: 20px auto;
     position: relative;
+    background-color: white;
   }
   
   address {
@@ -39,10 +40,3 @@
   }
   
   /* Your CSS below here */
-  body {
-    background-image: url("top-image.png");
-    background-image: url("bottom-image.png");
-    
-
-  }
-  
