@@ -22,3 +22,28 @@ body {
         grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
       }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 1fr 2fr;
+        grid-template-areas:
+          "aa aa"
+          "bb cc"
+          ". dd";
+      }
+      
+      .one {
+        grid-area: aa;
+      }
+      
+      .two {
+        grid-area: bb;
+      }
+      
+      .three {
+        grid-area: cc;
+      }
+      
+      .four {
+        grid-area: dd;
+      }
