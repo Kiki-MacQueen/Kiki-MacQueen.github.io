@@ -19,7 +19,7 @@ body {
       }  }
       .grid {
         display: grid;
-        grid-template-columns: 1fr; /* one column = stacked */
+        grid-template-columns: 1fr; 
         gap: 16px;
       }
       
