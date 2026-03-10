@@ -64,7 +64,7 @@ body {
     margin: 5px;
   }
   .card-content {
-    height: 200px;     
+    height: 50px;     
     overflow-y: auto;   
     overflow-x: hidden;  
   }
