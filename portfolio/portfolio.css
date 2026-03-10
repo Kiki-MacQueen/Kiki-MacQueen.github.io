@@ -63,3 +63,8 @@ body {
     display: block;
     margin: 5px;
   }
+  .card-content {
+    height: 200px;     
+    overflow-y: auto;   
+    overflow-x: hidden;  
+  }
