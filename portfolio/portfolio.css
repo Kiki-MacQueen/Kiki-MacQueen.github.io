@@ -54,11 +54,7 @@ main {
   width: fit-content;
   
 }
-.scroll-box {
-  height: 400px;     
-  overflow-y: auto;   
-  overflow-x: hidden; 
-}
+
 
 .cards {
   list-style: none;
