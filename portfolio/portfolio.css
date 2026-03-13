@@ -7,8 +7,8 @@ html {
 }
 
 body {
-  background-color: #f5f7fa;
-  color: #333;
+  background-color: #EEF2F8;
+  color: #1B2D4F;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -69,12 +69,12 @@ img {
 }
 
 .site-header a:hover {
-  background-color: #E8A838;
+  background-color: #F0F5FB;
   color: #23395B;
 }
 
 .site-header a[aria-current="page"] {
-  background-color: #E8A838;
+  background-color: #F0F5FB;
   color: #23395B;
   font-weight: bold;
 }
@@ -94,7 +94,7 @@ main {
 .intro-box {
   background-color: #23395B;
   color: #fff;
-  border: 3px solid #E8A838;
+  border: 3px solid #5E8DAE;
   border-radius: 6px;
   padding: 1.5em;
   max-width: 700px;
@@ -108,7 +108,7 @@ main {
 
 .intro-tagline {
   font-size: 0.9em;
-  color: #E8A838;
+  color: #A8C4DC;
   margin: -0.75em 0 1em;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -122,7 +122,7 @@ main {
 }
 
 .intro-links a {
-  color: #E8A838;
+  color: #A8C4DC;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -141,7 +141,7 @@ main a {
 }
 
 main a:hover {
-  color: #D4922A;
+  color: #5E8DAE;
 }
 
 main a:visited {
@@ -155,7 +155,7 @@ h1, h2, h3 {
 }
 
 article h3 {
-  border-left: 4px solid #E8A838;
+  border-left: 4px solid #5E8DAE;
   padding-left: 0.6em;
   margin-top: 0;
 }
@@ -189,8 +189,8 @@ section, article, aside {
 }
 
 .cards h2 {
-  background-color: #E8A838;
-  color: #23395B;
+  background-color: #23395B;
+  color: #F0F5FB;
   margin: 0;
   padding: 0.5em 1em;
   border-radius: 3px 3px 0 0;
@@ -278,7 +278,7 @@ section, article, aside {
 }
 
 .resume-download:hover {
-  background-color: #E8A838;
+  background-color: #F0F5FB;
   color: #23395B !important;
 }
 
@@ -337,7 +337,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #E8A838;
+  background-color: #F0F5FB;
   color: #23395B;
 }
 
