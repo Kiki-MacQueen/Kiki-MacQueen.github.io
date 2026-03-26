@@ -9,12 +9,12 @@ function randomValueFromArray(array) {
   return array[random];
 }
 
-const characters = ["Willy the Goblin", "Big Daddy", "Father Christmas"];
-const places = ["the soup kitchen", "Disneyland", "the White House"];
+const characters = ["Martha the chicken", "Mr. Pickles the horse", "Gary the wizard"];
+const places = ["the gym", "the bank", "the bakery"];
 const events = [
-  "spontaneously combusted",
-  "melted into a puddle on the sidewalk",
-  "turned into a slug and slithered away",
+  "sneezed halfway",
+  "crashed through a window",
+  "turned into a suspiciously formal puddle,",
 ];
 
 
@@ -22,7 +22,7 @@ function returnRandomStoryString() {
     const randomCharacter = randomValueFromArray(characters);
     const randomPlace = randomValueFromArray(places);
     const randomEvent = randomValueFromArray(events);
-    let storyText = `It was 94 Fahrenheit outside, so ${randomCharacter} went for a walk. When they got to ${randomPlace}, they stared in horror for a few moments, then ${randomEvent}. Bob saw the whole thing, but was not surprised — ${randomCharacter} weighs 300 pounds, and it was a hot day.`;
+    let storyText = `On Tuesday morning, ${randomCharacter} floated into ${randomPlace}, they stared in horror for a few moments, then ${randomEvent}. she had forgotten where the shed was and accused the neighbor’s goat of theft. ${randomCharacter} went home and cried.`;
   return storyText;
 }
 
