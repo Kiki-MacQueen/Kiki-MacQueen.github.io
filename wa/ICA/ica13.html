@@ -4,16 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Bouncing balls</title>
-    <link rel="stylesheet" href="style.css">
 
     <style>
      html, body {
     margin: 0;
-  }
-  
-  html {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 0;
     height: 100%;
+    overflow: hidden;
+    background-color: black;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  }
+
+  canvas{
+    display: block;
   }
   
   body {
@@ -22,21 +26,20 @@
   }
   
   h1 {
-    font-size: 2rem;
-    letter-spacing: -1px;
     position: absolute;
+    top: 20px;
+    left: 20px;
     margin: 0;
-    top: -4px;
-    right: 5px;
-  
-    color: transparent;
-    text-shadow: 0 0 4px white;
+    font-size: 2rem;
+    color: white;
+    text-shadow: 0 0 10px white;
+    z-index: 10;
   }
     </style>
   </head>
 
   <body>
-    <h1>bouncing balls</h1>
+    <h1>Bouncing Balls</h1>
     <canvas></canvas>
 <script>
     // setup canvas
@@ -96,6 +99,23 @@ update() {
     this.x += this.velX;
     this.y += this.velY;
   }
+}
+const balls = [];
+
+while (balls.length < 25) {
+  const size = random(10, 20);
+  const ball = new Ball(
+    // ball position always drawn at least one ball width
+    // away from the edge of the canvas, to avoid drawing errors
+    random(0 + size, width - size),
+    random(0 + size, height - size),
+    random(-7, 7),
+    random(-7, 7),
+    randomRGB(),
+    size,
+  );
+
+  balls.push(ball);
 }
 
 </script>
