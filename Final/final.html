@@ -41,7 +41,7 @@
       margin-left: 10px;
     }
 
-    /* quiz popup */
+    
     #quizBox {
       display: none;
       margin-top: 30px;
@@ -132,7 +132,8 @@
       questionEl.textContent = a + ' × ' + b + ' = ?';
       feedbackEl.textContent = '';
 
-      // make 3 wrong answers
+      // make 3 wrong answers next to the correct one, ADD timer here 
+      // to make it more stressful
       const wrongs = new Set();
       while (wrongs.size < 3) {
         const w = correctAns + rand(-10, 10);
