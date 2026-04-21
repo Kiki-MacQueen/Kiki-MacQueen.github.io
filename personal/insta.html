@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instagram Feed Planner</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fafafa;
+      color: #262626;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-logo {
+      font-family: 'Courier New', monospace;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+    .topbar-badge {
+      background: #f0f0f0;
+      border-radius: 20px;
+      font-size: 11px;
+      padding: 4px 10px;
+      color: #8e8e8e;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 935px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* ── Profile header ── */
+    .profile-header {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      margin-bottom: 44px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .avatar-ring {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 3px;
+      cursor: pointer;
+    }
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fafafa;
+      display: block;
+    }
+    .avatar-edit-btn {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: #0095f6;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #avatar-upload { display: none; }
+
+    .profile-info { flex: 1; }
+
+    .profile-row1 {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .username-display {
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+    }
+    .username-input {
+      font-size: 16px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      padding: 6px 10px;
+      outline: none;
+      background: #fff;
+      width: 200px;
+    }
+    .username-input:focus { border-color: #a8a8a8; }
+
+    .btn {
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      cursor: pointer;
+      border: 1px solid #dbdbdb;
+      background: #fff;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #f0f0f0; }
+    .btn-primary {
+      background: #0095f6;
+      color: #fff;
+      border-color: #0095f6;
+    }
+    .btn-primary:hover { background: #1877f2; border-color: #1877f2; }
+
+    .stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 16px;
+    }
+    .stat { text-align: center; }
+    .stat-count { font-weight: 700; font-size: 16px; }
+    .stat-label { font-size: 14px; color: #262626; }
+
+    .profile-name-display {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .profile-bio-display {
+      font-size: 14px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      color: #262626;
+    }
+
+    /* Edit panel */
+    .edit-panel {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      display: none;
+    }
+    .edit-panel.open { display: block; }
+    .edit-panel h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: #262626; }
+    .edit-row { margin-bottom: 12px; }
+    .edit-row label { display: block; font-size: 12px; font-weight: 600; color: #8e8e8e; margin-bottom: 4px; }
+    .edit-row input, .edit-row textarea {
+      width: 100%;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      background: #fafafa;
+      resize: vertical;
+    }
+    .edit-row input:focus, .edit-row textarea:focus { border-color: #a8a8a8; background: #fff; }
+    .edit-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+
+    /* ── Upload zone ── */
+    .upload-section {
+      margin-bottom: 32px;
+    }
+    .upload-section h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #8e8e8e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .drop-zone {
+      border: 2px dashed #dbdbdb;
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: #fff;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #0095f6;
+      background: #e8f4fd;
+    }
+    .drop-zone svg { margin-bottom: 10px; opacity: 0.4; }
+    .drop-zone p { font-size: 14px; color: #8e8e8e; }
+    .drop-zone span { color: #0095f6; font-weight: 600; cursor: pointer; }
+    #file-upload { display: none; }
+
+    /* ── Feed grid ── */
+    .feed-section h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #8e8e8e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .feed-hint {
+      font-size: 12px;
+      color: #a8a8a8;
+      margin-bottom: 16px;
+    }
+
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    .feed-cell {
+      position: relative;
+      aspect-ratio: 1;
+      background: #efefef;
+      overflow: hidden;
+      border-radius: 2px;
+      cursor: grab;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .feed-cell:active { cursor: grabbing; }
+    .feed-cell.dragging { opacity: 0.4; transform: scale(0.97); }
+    .feed-cell.drag-over { outline: 3px solid #0095f6; outline-offset: -3px; }
+
+    .feed-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* "New post" badge on first cell */
+    .feed-cell.new-post::after {
+      content: "NEW";
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #0095f6;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .cell-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+    .feed-cell:hover .cell-overlay { background: rgba(0,0,0,0.35); }
+    .cell-overlay button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+    .feed-cell:hover .cell-overlay button { opacity: 1; }
+
+    /* Position badge */
+    .pos-badge {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    /* Cover preview strip */
+    .cover-preview {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 32px;
+    }
+    .cover-preview h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #8e8e8e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .cover-preview p { font-size: 12px; color: #a8a8a8; margin-bottom: 14px; }
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      max-width: 320px;
+    }
+    .cover-cell {
+      aspect-ratio: 1;
+      background: #efefef;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .cover-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 60px 20px;
+      text-align: center;
+      color: #a8a8a8;
+    }
+    .empty-state svg { margin-bottom: 12px; opacity: 0.3; }
+    .empty-state p { font-size: 14px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #262626;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 600px) {
+      .profile-header { flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+      .stats { justify-content: center; }
+      .profile-row1 { justify-content: center; }
+      .avatar-ring { width: 100px; height: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Instagram</div>
+  <div class="topbar-badge">Feed Planner — local only, nothing is saved to Instagram</div>
+</div>
+
+<div class="container">
+
+  <!-- Profile header -->
+  <div class="profile-header">
+    <div class="avatar-wrap">
+      <div class="avatar-ring" id="avatar-ring" title="Click to change avatar">
+        <img id="avatar-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Ccircle cx='75' cy='75' r='75' fill='%23c7c7c7'/%3E%3Ccircle cx='75' cy='58' r='26' fill='%23fff'/%3E%3Cellipse cx='75' cy='130' rx='46' ry='36' fill='%23fff'/%3E%3C/svg%3E" alt="avatar" />
+      </div>
+      <button class="avatar-edit-btn" id="avatar-btn" title="Change photo">+</button>
+      <input type="file" id="avatar-upload" accept="image/*" />
+    </div>
+
+    <div class="profile-info">
+      <div class="profile-row1">
+        <span class="username-display" id="username-display">your_username</span>
+        <button class="btn" id="edit-profile-btn">Edit profile</button>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-count" id="post-count">0</div>
+          <div class="stat-label">posts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-count" id="follower-count">—</div>
+          <div class="stat-label">followers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-count" id="following-count">—</div>
+          <div class="stat-label">following</div>
+        </div>
+      </div>
+      <div class="profile-name-display" id="name-display">Your Name</div>
+      <div class="profile-bio-display" id="bio-display">Your bio goes here ✨</div>
+    </div>
+  </div>
+
+  <!-- Edit panel -->
+  <div class="edit-panel" id="edit-panel">
+    <h3>Edit Profile</h3>
+    <div class="edit-row">
+      <label>Username</label>
+      <input type="text" id="edit-username" placeholder="your_username" />
+    </div>
+    <div class="edit-row">
+      <label>Name</label>
+      <input type="text" id="edit-name" placeholder="Your Name" />
+    </div>
+    <div class="edit-row">
+      <label>Bio</label>
+      <textarea id="edit-bio" rows="3" placeholder="Your bio..."></textarea>
+    </div>
+    <div class="edit-row">
+      <label>Followers</label>
+      <input type="text" id="edit-followers" placeholder="e.g. 1,234" />
+    </div>
+    <div class="edit-row">
+      <label>Following</label>
+      <input type="text" id="edit-following" placeholder="e.g. 567" />
+    </div>
+    <div class="edit-actions">
+      <button class="btn" id="cancel-edit-btn">Cancel</button>
+      <button class="btn btn-primary" id="save-edit-btn">Save</button>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-section">
+    <h2>Add a post</h2>
+    <div class="drop-zone" id="drop-zone">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Drag &amp; drop photos here, or <span id="browse-link">browse</span></p>
+      <p style="margin-top:4px;font-size:12px;">JPG, PNG, WEBP supported</p>
+    </div>
+    <input type="file" id="file-upload" accept="image/*" multiple />
+  </div>
+
+  <!-- Feed grid -->
+  <div class="feed-section">
+    <h2>Your feed</h2>
+    <p class="feed-hint">Drag photos to reorder • Hover to delete • Top-left = most recent post</p>
+    <div class="feed-grid" id="feed-grid">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.2">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <p>Upload photos above to start planning your feed</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cover preview (first 9) -->
+  <div class="cover-preview" id="cover-preview" style="display:none">
+    <h2>Profile cover preview</h2>
+    <p>First 9 posts visible on your profile grid</p>
+    <div class="cover-grid" id="cover-grid"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────────
+  let posts = []; // Array of { id, dataURL }
+  let dragSrcIndex = null;
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function uid() { return Math.random().toString(36).slice(2); }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function readFiles(files) {
+    const promises = Array.from(files).map(file =>
+      new Promise(resolve => {
+        const r = new FileReader();
+        r.onload = e => resolve({ id: uid(), dataURL: e.target.result });
+        r.readAsDataURL(file);
+      })
+    );
+    Promise.all(promises).then(newPosts => {
+      posts = [...newPosts, ...posts]; // prepend = newest first
+      renderFeed();
+      showToast(`Added ${newPosts.length} photo${newPosts.length > 1 ? 's' : ''}`);
+    });
+  }
+
+  // ── Profile ────────────────────────────────────────────────────────────────
+  document.getElementById('edit-profile-btn').addEventListener('click', () => {
+    const panel = document.getElementById('edit-panel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      document.getElementById('edit-username').value = document.getElementById('username-display').textContent;
+      document.getElementById('edit-name').value = document.getElementById('name-display').textContent;
+      document.getElementById('edit-bio').value = document.getElementById('bio-display').textContent;
+      document.getElementById('edit-followers').value = document.getElementById('follower-count').textContent.replace('—','');
+      document.getElementById('edit-following').value = document.getElementById('following-count').textContent.replace('—','');
+    }
+  });
+
+  document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+    document.getElementById('edit-panel').classList.remove('open');
+  });
+
+  document.getElementById('save-edit-btn').addEventListener('click', () => {
+    const u = document.getElementById('edit-username').value.trim() || 'your_username';
+    const n = document.getElementById('edit-name').value.trim() || 'Your Name';
+    const b = document.getElementById('edit-bio').value.trim();
+    const fo = document.getElementById('edit-followers').value.trim() || '—';
+    const fi = document.getElementById('edit-following').value.trim() || '—';
+    document.getElementById('username-display').textContent = u;
+    document.getElementById('name-display').textContent = n;
+    document.getElementById('bio-display').textContent = b;
+    document.getElementById('follower-count').textContent = fo;
+    document.getElementById('following-count').textContent = fi;
+    document.getElementById('edit-panel').classList.remove('open');
+    showToast('Profile updated');
+  });
+
+  // Avatar
+  document.getElementById('avatar-btn').addEventListener('click', () => document.getElementById('avatar-upload').click());
+  document.getElementById('avatar-ring').addEventListener('click', () => document.getElementById('avatar-upload').click());
+  document.getElementById('avatar-upload').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => { document.getElementById('avatar-img').src = ev.target.result; showToast('Profile photo updated'); };
+    r.readAsDataURL(file);
+  });
+
+  // ── Upload zone ────────────────────────────────────────────────────────────
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-upload');
+
+  document.getElementById('browse-link').addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => { if (e.target.files.length) readFiles(e.target.files); fileInput.value = ''; });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if (files.length) readFiles(files);
+  });
+
+  // ── Feed render ────────────────────────────────────────────────────────────
+  function renderFeed() {
+    const grid = document.getElementById('feed-grid');
+    grid.innerHTML = '';
+
+    document.getElementById('post-count').textContent = posts.length;
+
+    if (posts.length === 0) {
+      grid.innerHTML = `<div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.2">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <p>Upload photos above to start planning your feed</p>
+      </div>`;
+      document.getElementById('cover-preview').style.display = 'none';
+      return;
+    }
+
+    posts.forEach((post, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'feed-cell' + (i === 0 ? ' new-post' : '');
+      cell.draggable = true;
+      cell.dataset.index = i;
+
+      const img = document.createElement('img');
+      img.src = post.dataURL;
+      img.alt = `Post ${i + 1}`;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'cell-overlay';
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑';
+      delBtn.title = 'Remove from feed';
+      delBtn.addEventListener('click', e => { e.stopPropagation(); removePost(i); });
+
+      const badge = document.createElement('div');
+      badge.className = 'pos-badge';
+      badge.textContent = i + 1;
+
+      overlay.appendChild(delBtn);
+      cell.appendChild(img);
+      cell.appendChild(overlay);
+      cell.appendChild(badge);
+
+      // Drag events
+      cell.addEventListener('dragstart', () => {
+        dragSrcIndex = i;
+        setTimeout(() => cell.classList.add('dragging'), 0);
+      });
+      cell.addEventListener('dragend', () => {
+        cell.classList.remove('dragging');
+        document.querySelectorAll('.feed-cell').forEach(c => c.classList.remove('drag-over'));
+      });
+      cell.addEventListener('dragover', e => { e.preventDefault(); cell.classList.add('drag-over'); });
+      cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
+      cell.addEventListener('drop', e => {
+        e.preventDefault();
+        cell.classList.remove('drag-over');
+        const destIndex = parseInt(cell.dataset.index);
+        if (dragSrcIndex !== null && dragSrcIndex !== destIndex) {
+          const moved = posts.splice(dragSrcIndex, 1)[0];
+          posts.splice(destIndex, 0, moved);
+          dragSrcIndex = null;
+          renderFeed();
+          showToast('Feed reordered');
+        }
+      });
+
+      grid.appendChild(cell);
+    });
+
+    renderCoverPreview();
+  }
+
+  function removePost(index) {
+    posts.splice(index, 1);
+    renderFeed();
+    showToast('Post removed');
+  }
+
+  // ── Cover preview (first 9) ────────────────────────────────────────────────
+  function renderCoverPreview() {
+    const preview = document.getElementById('cover-preview');
+    const coverGrid = document.getElementById('cover-grid');
+    if (posts.length === 0) { preview.style.display = 'none'; return; }
+
+    preview.style.display = 'block';
+    coverGrid.innerHTML = '';
+    const top9 = posts.slice(0, 9);
+    top9.forEach(post => {
+      const cell = document.createElement('div');
+      cell.className = 'cover-cell';
+      const img = document.createElement('img');
+      img.src = post.dataURL;
+      cell.appendChild(img);
+      coverGrid.appendChild(cell);
+    });
+    // Pad empty slots
+    for (let i = top9.length; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cover-cell';
+      coverGrid.appendChild(cell);
+    }
+  }
+</script>
+</body>
+</html>
