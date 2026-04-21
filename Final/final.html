@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Volume Control</title>
+  <style>
+    body {
+      background: #222;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .volume-bar-track {
+      width: 200px;
+      height: 12px;
+      background: #444;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .volume-bar-fill {
+      height: 100%;
+      background: #4cc9f0;
+      border-radius: 6px;
+      width: 50%;
+      transition: width 0.4s;
+    }
+
+    #volumePercent {
+      margin-left: 10px;
+    }
+
+    /* quiz popup */
+    #quizBox {
+      display: none;
+      margin-top: 30px;
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 280px;
+    }
+
+    #quizBox h2 {
+      margin-bottom: 15px;
+    }
+
+    .answer-btn {
+      margin: 6px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #888;
+      background: #555;
+      color: white;
+    }
+
+    .answer-btn:hover {
+      background: #666;
+    }
+
+    #feedback {
+      margin-top: 12px;
+      color: #ff6b6b;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Volume Control</h1>
+
+  <div>
+    <span>🔊</span>
+    <div class="volume-bar-track" id="volumeTrack">
+      <div class="volume-bar-fill" id="volumeFill"></div>
+    </div>
+    <span id="volumePercent">50%</span>
+  </div>
+
+  <p style="color:#888; font-size:0.8rem; margin-top:8px;">click the bar to change volume</p>
+
+  <div id="quizBox">
+    <p>solve this to set the volume:</p>
+    <h2 id="question"></h2>
+    <div id="answers"></div>
+    <p id="feedback"></p>
+  </div>
+
+  <script>
+    let volume = 50;
+    let correctAns = 0;
+
+    const track = document.getElementById('volumeTrack');
+    const fill = document.getElementById('volumeFill');
+    const pct = document.getElementById('volumePercent');
+    const quizBox = document.getElementById('quizBox');
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const feedbackEl = document.getElementById('feedback');
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function showQuiz() {
+      quizBox.style.display = 'block';
+      generateQuestion();
+    }
+
+    function generateQuestion() {
+      const a = rand(2, 9);
+      const b = rand(2, 9);
+      correctAns = a * b;
+
+      questionEl.textContent = a + ' × ' + b + ' = ?';
+      feedbackEl.textContent = '';
+
+      // make 3 wrong answers
+      const wrongs = new Set();
+      while (wrongs.size < 3) {
+        const w = correctAns + rand(-10, 10);
+        if (w !== correctAns && w > 0 && w < 100) wrongs.add(w);
+      }
+
+      const choices = shuffle([correctAns, ...wrongs]);
+
+      answersEl.innerHTML = '';
+      choices.forEach(val => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = val + '%';
+        btn.onclick = () => checkAnswer(val);
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(chosen) {
+      if (chosen === correctAns) {
+        volume = correctAns;
+        fill.style.width = volume + '%';
+        pct.textContent = volume + '%';
+        feedbackEl.style.color = '#6bffb8';
+        feedbackEl.textContent = 'correct! volume set to ' + volume + '%';
+        setTimeout(() => { quizBox.style.display = 'none'; }, 900);
+      } else {
+        feedbackEl.style.color = '#ff6b6b';
+        feedbackEl.textContent = 'wrong. try again.';
+        setTimeout(generateQuestion, 900);
+      }
+    }
+
+    track.addEventListener('click', showQuiz);
+  </script>
+
+</body>
+</html>
