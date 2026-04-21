@@ -103,6 +103,7 @@
     let volume = 50;
     let correctAns = 0;
 
+    // random elements i need
     const track = document.getElementById('volumeTrack');
     const fill = document.getElementById('volumeFill');
     const pct = document.getElementById('volumePercent');
@@ -111,6 +112,7 @@
     const answersEl = document.getElementById('answers');
     const feedbackEl = document.getElementById('feedback');
 
+    // random number helper
     function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -132,8 +134,7 @@
       questionEl.textContent = a + ' × ' + b + ' = ?';
       feedbackEl.textContent = '';
 
-      // make 3 wrong answers next to the correct one, ADD timer here 
-      // to make it more stressful
+      // 3 wrong answers, kept them close so its not too obvious
       const wrongs = new Set();
       while (wrongs.size < 3) {
         const w = correctAns + rand(-10, 10);
@@ -163,6 +164,7 @@
       } else {
         feedbackEl.style.color = '#ff6b6b';
         feedbackEl.textContent = 'wrong. try again.';
+        // resets the question after a sec
         setTimeout(generateQuestion, 900);
       }
     }
