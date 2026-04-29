@@ -41,7 +41,6 @@
       margin-left: 10px;
     }
 
-    
     #quizBox {
       display: none;
       margin-top: 30px;
@@ -76,6 +75,17 @@
       color: #ff6b6b;
       min-height: 20px;
     }
+
+    #timer {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #f0a500;
+    }
+
+    #timer.urgent {
+      color: #ff4444;
+    }
   </style>
 </head>
 <body>
@@ -93,6 +103,7 @@
   <p style="color:#888; font-size:0.8rem; margin-top:8px;">click the bar to change volume</p>
 
   <div id="quizBox">
+    <div id="timer">5</div>
     <p>solve this to set the volume:</p>
     <h2 id="question"></h2>
     <div id="answers"></div>
@@ -102,8 +113,10 @@
   <script>
     let volume = 50;
     let correctAns = 0;
+    let timerInterval = null;
+    let timeLeft = 5;
 
-    // random elements i need
+    // grabbing all the elements i need
     const track = document.getElementById('volumeTrack');
     const fill = document.getElementById('volumeFill');
     const pct = document.getElementById('volumePercent');
@@ -111,8 +124,8 @@
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const feedbackEl = document.getElementById('feedback');
+    const timerEl = document.getElementById('timer');
 
-    // random number helper
     function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -121,24 +134,71 @@
       return arr.sort(() => Math.random() - 0.5);
     }
 
-    function showQuiz() {
-      quizBox.style.display = 'block';
-      generateQuestion();
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 5;
+      timerEl.textContent = timeLeft;
+      timerEl.classList.remove('urgent');
+
+      timerInterval = setInterval(function() {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        if (timeLeft <= 2) timerEl.classList.add('urgent');
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          quizBox.style.display = 'none';
+          feedbackEl.textContent = '';
+        }
+      }, 1000);
     }
 
-    function generateQuestion() {
-      const a = rand(2, 9);
-      const b = rand(2, 9);
-      correctAns = a * b;
+    function showQuiz(e) {
+      // figure out where on the bar the user clicked (0 to 1)
+      var rect = track.getBoundingClientRect();
+      var clickPos = (e.clientX - rect.left) / rect.width;
+      clickPos = Math.max(0, Math.min(1, clickPos));
 
-      questionEl.textContent = a + ' × ' + b + ' = ?';
+      quizBox.style.display = 'block';
+      generateQuestion(clickPos);
+      startTimer();
+    }
+
+    function generateQuestion(clickPos) {
       feedbackEl.textContent = '';
+
+      // low = 0-33%, mid = 34-66%, high = 67-100%
+      var targetMin, targetMax;
+      if (clickPos < 0.33) {
+        targetMin = 6;
+        targetMax = 30;
+      } else if (clickPos < 0.66) {
+        targetMin = 31;
+        targetMax = 60;
+      } else {
+        targetMin = 61;
+        targetMax = 81; // max single digit product is 9x9=81
+      }
+
+      // find a multiplication pair whose product lands in the target range
+      var a, b, product;
+      var tries = 0;
+      do {
+        a = rand(2, 9);
+        b = rand(2, 9);
+        product = a * b;
+        tries++;
+      } while ((product < targetMin || product > targetMax) && tries < 100);
+
+      correctAns = product;
+      questionEl.textContent = a + ' × ' + b + ' = ?';
 
       // 3 wrong answers, kept them close so its not too obvious
       const wrongs = new Set();
       while (wrongs.size < 3) {
-        const w = correctAns + rand(-10, 10);
-        if (w !== correctAns && w > 0 && w < 100) wrongs.add(w);
+        const w = correctAns + rand(-8, 8);
+        if (w !== correctAns && w >= targetMin - 5 && w <= targetMax + 5) wrongs.add(w);
       }
 
       const choices = shuffle([correctAns, ...wrongs]);
@@ -155,6 +215,7 @@
 
     function checkAnswer(chosen) {
       if (chosen === correctAns) {
+        clearInterval(timerInterval);
         volume = correctAns;
         fill.style.width = volume + '%';
         pct.textContent = volume + '%';
@@ -165,11 +226,18 @@
         feedbackEl.style.color = '#ff6b6b';
         feedbackEl.textContent = 'wrong. try again.';
         // resets the question after a sec
-        setTimeout(generateQuestion, 900);
+        setTimeout(() => generateQuestion(lastClickPos), 900);
       }
     }
 
-    track.addEventListener('click', showQuiz);
+    // store last click position so wrong answer regenerate stays in same range
+    var lastClickPos = 0.5;
+    track.addEventListener('click', function(e) {
+      var rect = track.getBoundingClientRect();
+      lastClickPos = (e.clientX - rect.left) / rect.width;
+      lastClickPos = Math.max(0, Math.min(1, lastClickPos));
+      showQuiz(e);
+    });
   </script>
 
 </body>
