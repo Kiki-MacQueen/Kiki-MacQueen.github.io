@@ -116,7 +116,6 @@
     let timerInterval = null;
     let timeLeft = 10;
 
-    // grabbing all the elements i need
     const track = document.getElementById('volumeTrack');
     const fill = document.getElementById('volumeFill');
     const pct = document.getElementById('volumePercent');
@@ -156,9 +155,8 @@
 
     function showQuiz(e) {
       // figure out where on the bar the user clicked (0 to 1)
-      var rect = track.getBoundingClientRect();
-      var clickPos = (e.clientX - rect.left) / rect.width;
-      clickPos = Math.max(0, Math.min(1, clickPos));
+      const rect = track.getBoundingClientRect();
+      const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
 
       quizBox.style.display = 'block';
       generateQuestion(clickPos);
@@ -169,7 +167,7 @@
       feedbackEl.textContent = '';
 
       // low = 0-33%, mid = 34-66%, high = 67-100%
-      var targetMin, targetMax;
+      let targetMin, targetMax;
       if (clickPos < 0.33) {
         targetMin = 6;
         targetMax = 30;
@@ -178,30 +176,28 @@
         targetMax = 60;
       } else {
         targetMin = 61;
-        targetMax = 81; // max single digit product is 9x9=81
+        targetMax = 81;
       }
 
       // find a multiplication pair whose product lands in the target range
-      var a, b, product;
-      var tries = 0;
+      let a, b, product;
       do {
         a = rand(2, 9);
         b = rand(2, 9);
         product = a * b;
-        tries++;
-      } while ((product < targetMin || product > targetMax) && tries < 100);
+      } while (product < targetMin || product > targetMax);
 
       correctAns = product;
       questionEl.textContent = a + ' × ' + b + ' = ?';
 
       // 3 wrong answers, kept them close so its not too obvious
-      const wrongs = new Set();
-      while (wrongs.size < 3) {
+      const wrongs = [];
+      while (wrongs.length < 3) {
         const w = correctAns + rand(-8, 8);
-        if (w !== correctAns && w >= targetMin - 5 && w <= targetMax + 5) wrongs.add(w);
+        if (w !== correctAns && wrongs.indexOf(w) === -1) wrongs.push(w);
       }
 
-      const choices = shuffle([correctAns, ...wrongs]);
+      const choices = shuffle([correctAns, wrongs[0], wrongs[1], wrongs[2]]);
 
       answersEl.innerHTML = '';
       choices.forEach(val => {
@@ -230,12 +226,10 @@
       }
     }
 
-    // store last click position so wrong answer regenerate stays in same range
-    var lastClickPos = 0.5;
+    let lastClickPos = 0.5;
     track.addEventListener('click', function(e) {
-      var rect = track.getBoundingClientRect();
-      lastClickPos = (e.clientX - rect.left) / rect.width;
-      lastClickPos = Math.max(0, Math.min(1, lastClickPos));
+      const rect = track.getBoundingClientRect();
+      lastClickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
       showQuiz(e);
     });
   </script>
