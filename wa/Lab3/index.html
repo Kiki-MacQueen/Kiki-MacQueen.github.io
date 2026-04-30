@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unreal Snow World</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js"></script>
+</head>
+<body>
+  <a-scene>
+
+    <!-- Environment preset -->
+    <a-entity environment="preset: starry; groundColor: #b0c8e8; groundColor2: #d0e4f7; dressing: none; fog: 0.6"></a-entity>
+
+    <!-- Snow ground plane -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="100" height="100" color="#ddeeff"></a-plane>
+
+    <!-- ===================== SNOWMAN ===================== -->
+    <!-- Bottom body -->
+    <a-sphere position="0 0.8 -4" radius="0.8" color="white" roughness="0.9" metalness="0.0"></a-sphere>
+    <!-- Middle body -->
+    <a-sphere position="0 2.0 -4" radius="0.6" color="white" roughness="0.9" metalness="0.0"></a-sphere>
+    <!-- Head -->
+    <a-sphere position="0 3.0 -4" radius="0.45" color="white" roughness="0.9" metalness="0.0"></a-sphere>
+
+    <!-- Carrot nose (orange cone pointing forward) -->
+    <a-cone position="0 3.0 -3.52" rotation="-90 0 0" radius-bottom="0.07" radius-top="0" height="0.4" color="#ff7700"></a-cone>
+
+    <!-- Eyes (two small dark spheres) -->
+    <a-sphere position="-0.15 3.12 -3.57" radius="0.05" color="#222222"></a-sphere>
+    <a-sphere position="0.15 3.12 -3.57" radius="0.05" color="#222222"></a-sphere>
+
+    <!-- Mouth (three small dark spheres in an arc) -->
+    <a-sphere position="-0.17 2.88 -3.57" radius="0.04" color="#333333"></a-sphere>
+    <a-sphere position="0 2.84 -3.56" radius="0.04" color="#333333"></a-sphere>
+    <a-sphere position="0.17 2.88 -3.57" radius="0.04" color="#333333"></a-sphere>
+
+    <!-- Buttons on middle body -->
+    <a-sphere position="0 2.2 -3.42" radius="0.06" color="#333333"></a-sphere>
+    <a-sphere position="0 2.0 -3.40" radius="0.06" color="#333333"></a-sphere>
+    <a-sphere position="0 1.8 -3.42" radius="0.06" color="#333333"></a-sphere>
+
+    <!-- Arms (boxes angled outward) -->
+    <a-box position="-1.1 2.1 -4" width="0.8" height="0.1" depth="0.1" color="#5c3a1e" rotation="0 0 25"></a-box>
+    <a-box position="1.1 2.1 -4" width="0.8" height="0.1" depth="0.1" color="#5c3a1e" rotation="0 0 -25"></a-box>
+
+    <!-- Hat brim (flat box) -->
+    <a-box position="0 3.5 -4" width="0.75" height="0.06" depth="0.75" color="#222222"></a-box>
+    <!-- Hat top (taller narrower box) -->
+    <a-box position="0 3.85 -4" width="0.5" height="0.6" depth="0.5" color="#222222"></a-box>
+
+    <!-- Hat scarf/band (thin colored stripe) -->
+    <a-box position="0 3.62 -4" width="0.52" height="0.09" depth="0.52" color="#cc2222"></a-box>
+
+    <!-- ===================== SECOND SNOWMAN (background) ===================== -->
+    <a-sphere position="3 0.55 -7" radius="0.55" color="white" roughness="0.9"></a-sphere>
+    <a-sphere position="3 1.5 -7" radius="0.42" color="white" roughness="0.9"></a-sphere>
+    <a-sphere position="3 2.2 -7" radius="0.32" color="white" roughness="0.9"></a-sphere>
+    <!-- Tiny hat for second snowman -->
+    <a-box position="3 2.56 -7" width="0.5" height="0.05" depth="0.5" color="#222222"></a-box>
+    <a-box position="3 2.8 -7" width="0.34" height="0.44" depth="0.34" color="#222222"></a-box>
+    <!-- Eyes -->
+    <a-sphere position="2.87 2.28 -6.70" radius="0.035" color="#222"></a-sphere>
+    <a-sphere position="3.10 2.28 -6.70" radius="0.035" color="#222"></a-sphere>
+    <!-- Tiny carrot nose -->
+    <a-cone position="3 2.2 -6.7" rotation="-90 0 0" radius-bottom="0.05" radius-top="0" height="0.28" color="#ff7700"></a-cone>
+
+    <!-- ===================== SOME SNOWBALLS ON THE GROUND ===================== -->
+    <a-sphere position="-2 0.25 -5" radius="0.25" color="white" roughness="0.9"></a-sphere>
+    <a-sphere position="-2.5 0.18 -5.5" radius="0.18" color="white" roughness="0.9"></a-sphere>
+
+    <!-- ===================== PINE TREE (triangle stack using cones) ===================== -->
+    <a-cone position="-4 1.2 -8" radius-bottom="1.0" radius-top="0" height="1.4" color="#2d6a2d"></a-cone>
+    <a-cone position="-4 2.0 -8" radius-bottom="0.75" radius-top="0" height="1.2" color="#2d8a2d"></a-cone>
+    <a-cone position="-4 2.7 -8" radius-bottom="0.5" radius-top="0" height="1.0" color="#3aaa3a"></a-cone>
+    <!-- Tree trunk -->
+    <a-box position="-4 0.3 -8" width="0.3" height="0.6" depth="0.3" color="#5c3a1e"></a-box>
+
+    <!-- ===================== SNOWFLAKE ANIMATION ===================== -->
+    <!-- Animated falling snow sphere (repeated using animation) -->
+    <a-sphere position="1 6 -5" radius="0.06" color="white" opacity="0.9">
+      <a-animation attribute="position" from="1 6 -5" to="1 0 -5" dur="4000" repeat="indefinite" easing="linear"></a-animation>
+    </a-sphere>
+    <a-sphere position="-1 5 -6" radius="0.05" color="white" opacity="0.9">
+      <a-animation attribute="position" from="-1 5 -6" to="-1 0 -6" dur="3500" repeat="indefinite" easing="linear"></a-animation>
+    </a-sphere>
+    <a-sphere position="2.5 7 -7" radius="0.05" color="white" opacity="0.9">
+      <a-animation attribute="position" from="2.5 7 -7" to="2.5 0 -7" dur="5000" repeat="indefinite" easing="linear"></a-animation>
+    </a-sphere>
+    <a-sphere position="-3 6 -5" radius="0.06" color="white" opacity="0.9">
+      <a-animation attribute="position" from="-3 6 -5" to="-3 0 -5" dur="4500" repeat="indefinite" easing="linear"></a-animation>
+    </a-sphere>
+
+    <!-- Camera with cursor -->
+    <a-camera position="0 1.6 0">
+      <a-cursor></a-cursor>
+    </a-camera>
+
+    <!-- Ambient + directional lighting for snowy look -->
+    <a-light type="ambient" color="#cce0ff" intensity="0.7"></a-light>
+    <a-light type="directional" color="#ffffff" intensity="0.8" position="2 4 -1"></a-light>
+
+  </a-scene>
+</body>
+</html>
